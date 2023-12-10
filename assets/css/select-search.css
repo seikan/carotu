@@ -1,0 +1,27 @@
+.select-search {
+	-webkit-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+.select-search.disabled {
+	background-color: var(--bs-secondary-bg);
+	opacity: 1;
+}
+
+.select-search.focus {
+	border-color: #86b7fe;
+	outline: 0;
+	box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.select-search-input:focus {
+	border: var(--bs-border-width) solid var(--bs-border-color) !important;
+	box-shadow: none !important;
+}
+
+.select-search-item a code {
+	color: var(--bs-gray-700);
+	background-color: var(--bs-warning-border-subtle);
+	font-family: inherit;
+}
