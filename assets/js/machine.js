@@ -146,6 +146,9 @@ class Machine {
 				return;
 			}
 
+			// Expand IPv6
+			ip = _this.ip.expandAddress6(ip);
+
 			var ipList = $('input[name="ip"]').val().split(',');
 
 			if (ipList.includes(ip)) {
