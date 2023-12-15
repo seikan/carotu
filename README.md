@@ -6,6 +6,19 @@ I wrote this in my leisure time as a hobby. Please do not expect frequent update
 
 
 
+### Demo
+
+A demo page is available at https://demo.carotu.com/
+
+```
+Username: Carotu
+Password: CarotuDemo#100
+```
+
+All records refreshed hourly.
+
+
+
 ### Requirements
 
 * PHP 8.0 and above
