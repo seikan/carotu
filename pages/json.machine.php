@@ -423,7 +423,7 @@ if ($request->isPost()) {
 
 			foreach ($searches as $search) {
 				// Separate column, operator and condition
-				if (!preg_match('/^([a-zA-Z ]+)([:=<>])([a-zA-Z0-9:.]+)$/', $search, $matches)) {
+				if (!preg_match('/^([a-zA-Z ]+)([:=<>])([a-zA-Z0-9:. ]+)$/', $search, $matches)) {
 					continue;
 				}
 
