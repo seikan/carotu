@@ -182,6 +182,9 @@ function createMachine($data, $db) {
         }
     }
 
+    // Validate and sanitize all data
+    $data = validateMachineData($data, $db, false);
+
     $now = date('Y-m-d H:i:s');
 
     $sql = "INSERT INTO machine (
@@ -240,6 +243,9 @@ function updateMachine($id, $data, $db) {
     if (!$stmt->fetch()) {
         sendError(404, 'Machine not found');
     }
+
+    // Validate and sanitize all data
+    $data = validateMachineData($data, $db, true);
 
     $now = date('Y-m-d H:i:s');
 
@@ -413,4 +419,134 @@ function sendError($code, $message) {
         ]
     ], JSON_PRETTY_PRINT);
     exit();
+}
+
+/**
+ * Validate machine data
+ *
+ * @param array $data Machine data to validate
+ * @param PDO $db Database connection
+ * @param bool $isUpdate Whether this is an update operation
+ * @return array Validated and sanitized data
+ */
+function validateMachineData($data, $db, $isUpdate = false) {
+    $errors = [];
+
+    // 1. Validate provider_id (if provided or required for create)
+    if (isset($data['provider_id']) || !$isUpdate) {
+        if (!isset($data['provider_id']) && !$isUpdate) {
+            $errors[] = "Missing required field: provider_id";
+        } elseif (isset($data['provider_id'])) {
+            if (!is_numeric($data['provider_id']) || $data['provider_id'] <= 0) {
+                $errors[] = "provider_id must be a positive integer";
+            } else {
+                // Check if provider exists
+                $stmt = $db->prepare("SELECT provider_id FROM provider WHERE provider_id = ?");
+                $stmt->execute([$data['provider_id']]);
+                if (!$stmt->fetch()) {
+                    $errors[] = "Invalid provider_id: provider does not exist";
+                }
+            }
+        }
+    }
+
+    // 2. Validate payment_cycle_id (if provided)
+    if (isset($data['payment_cycle_id'])) {
+        if (!is_numeric($data['payment_cycle_id']) || $data['payment_cycle_id'] <= 0) {
+            $errors[] = "payment_cycle_id must be a positive integer";
+        } else {
+            $stmt = $db->prepare("SELECT payment_cycle_id FROM payment_cycle WHERE payment_cycle_id = ?");
+            $stmt->execute([$data['payment_cycle_id']]);
+            if (!$stmt->fetch()) {
+                $errors[] = "Invalid payment_cycle_id: payment cycle does not exist";
+            }
+        }
+    }
+
+    // 3. Validate country_code (if provided and not empty)
+    if (isset($data['country_code']) && $data['country_code'] !== '') {
+        if (!preg_match('/^[A-Z]{2}$/i', $data['country_code'])) {
+            $errors[] = "country_code must be a 2-letter ISO code";
+        } else {
+            $stmt = $db->prepare("SELECT country_code FROM country WHERE country_code = ?");
+            $stmt->execute([strtoupper($data['country_code'])]);
+            if (!$stmt->fetch()) {
+                $errors[] = "Invalid country_code: country does not exist";
+            }
+            // Normalize to uppercase
+            $data['country_code'] = strtoupper($data['country_code']);
+        }
+    }
+
+    // 4. Validate numeric fields (must be non-negative integers)
+    $numericFields = [
+        'cpu_speed' => 'CPU speed',
+        'cpu_core' => 'CPU cores',
+        'memory' => 'Memory',
+        'swap' => 'Swap',
+        'disk_space' => 'Disk space',
+        'bandwidth' => 'Bandwidth'
+    ];
+
+    foreach ($numericFields as $field => $label) {
+        if (isset($data[$field])) {
+            if (!is_numeric($data[$field])) {
+                $errors[] = "$label must be a number";
+            } elseif ($data[$field] < 0) {
+                $errors[] = "$label cannot be negative";
+            } else {
+                // Cast to integer
+                $data[$field] = (int)$data[$field];
+            }
+        }
+    }
+
+    // 5. Validate price (must be non-negative numeric)
+    if (isset($data['price'])) {
+        if (!is_numeric($data['price'])) {
+            $errors[] = "Price must be a number";
+        } elseif ($data['price'] < 0) {
+            $errors[] = "Price cannot be negative";
+        } else {
+            // Cast to float for decimal prices
+            $data['price'] = (float)$data['price'];
+        }
+    }
+
+    // 6. Validate boolean fields
+    $booleanFields = ['is_hidden', 'is_nat'];
+    foreach ($booleanFields as $field) {
+        if (isset($data[$field])) {
+            $data[$field] = (int)(bool)$data[$field];
+        }
+    }
+
+    // 7. Validate due_date format (if provided and not empty)
+    if (isset($data['due_date']) && $data['due_date'] !== '') {
+        if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $data['due_date'])) {
+            $errors[] = "due_date must be in YYYY-MM-DD format";
+        } else {
+            // Validate it's a real date
+            $parts = explode('-', $data['due_date']);
+            if (!checkdate((int)$parts[1], (int)$parts[2], (int)$parts[0])) {
+                $errors[] = "due_date is not a valid date";
+            }
+        }
+    }
+
+    // 8. Validate currency_code (if provided)
+    if (isset($data['currency_code']) && $data['currency_code'] !== '') {
+        if (!preg_match('/^[A-Z]{3}$/i', $data['currency_code'])) {
+            $errors[] = "currency_code must be a 3-letter currency code (e.g., USD, EUR)";
+        } else {
+            $data['currency_code'] = strtoupper($data['currency_code']);
+        }
+    }
+
+    // If there are validation errors, send them
+    if (!empty($errors)) {
+        sendError(400, implode('; ', $errors));
+    }
+
+    return $data;
 }
