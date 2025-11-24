@@ -168,7 +168,7 @@ A Docker Compose configuration is provided for easy deployment:
 
 ```bash
 # Clone the repository
-git clone https://github.com/asimzeeshan/carotu.git
+git clone https://github.com/seikan/carotu.git
 cd carotu
 
 # Start with Docker Compose
