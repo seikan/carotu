@@ -156,9 +156,137 @@ server {
 
 ### Installation
 
+#### Traditional Installation
+
 1. Download the latest version from here.
 2. Decompress the package and upload it to web server.
 3. Access the system from web browser to continue the setup.
+
+#### Docker Installation
+
+A Docker Compose configuration is provided for easy deployment:
+
+```bash
+# Clone the repository
+git clone https://github.com/asimzeeshan/carotu.git
+cd carotu
+
+# Start with Docker Compose
+docker-compose up -d
+```
+
+Access at `http://localhost` or configure `VIRTUAL_HOST` environment variable for reverse proxy setups.
+
+**Docker Requirements:**
+- Docker and Docker Compose installed
+- Port 80 available (or configure reverse proxy)
+
+See `docker-compose.yml` for configuration options.
+
+
+
+### REST API
+
+Carotu includes a REST API for programmatic access to your server inventory.
+
+#### API Installation
+
+The `api/` directory contains a standalone REST API that works alongside the main Carotu installation.
+
+**Quick Setup:**
+
+1. API files are already included in the repository
+2. Configure your API key in `api/config.php`:
+   ```php
+   $VALID_API_KEYS = [
+       'your-secure-api-key-here',  // Generate with: openssl rand -hex 32
+   ];
+   ```
+3. Ensure Apache `mod_headers` and `mod_rewrite` are enabled
+4. Access API at `https://yourdomain.com/api/`
+
+**Why separate API config?**
+- The API uses `api/config.php` (separate from main `configuration.php`)
+- Different authentication: API keys vs web UI credentials
+- Independent CORS and error logging configuration
+- Can be deployed separately if needed
+
+#### API Endpoints
+
+**Authentication:** All requests require `X-API-Key` header
+
+```bash
+curl -H "X-API-Key: your-api-key" https://yourdomain.com/api/machines
+```
+
+**Available Endpoints:**
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/machines` | GET | List all machines |
+| `/machines/{id}` | GET | Get single machine |
+| `/machines` | POST | Create new machine |
+| `/machines/{id}` | PUT | Update machine |
+| `/machines/{id}` | DELETE | Delete machine |
+| `/providers` | GET | List all providers |
+| `/providers/{id}` | GET | Get single provider |
+| `/payment-cycles` | GET | List payment cycles |
+| `/countries` | GET | List countries |
+| `/stats` | GET | Get statistics |
+
+**Example: Create Machine**
+
+```bash
+curl -X POST \
+  -H "X-API-Key: your-api-key" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "label": "Production Server",
+    "ip_address": "1.2.3.4",
+    "provider_id": 1,
+    "country_code": "US",
+    "city_name": "New York",
+    "cpu_core": 4,
+    "memory": 8192,
+    "disk_space": 160000,
+    "price": 10,
+    "currency_code": "USD",
+    "payment_cycle_id": 1,
+    "due_date": "2025-12-01"
+  }' \
+  https://yourdomain.com/api/machines
+```
+
+**Example: Get Statistics**
+
+```bash
+curl -H "X-API-Key: your-api-key" https://yourdomain.com/api/stats
+```
+
+Response:
+```json
+{
+  "success": true,
+  "data": {
+    "stats": {
+      "total_machines": 47,
+      "monthly_cost": 16903,
+      "by_provider": [...],
+      "by_country": [...]
+    }
+  }
+}
+```
+
+#### Nginx Configuration for API
+
+Add to your Nginx server block:
+
+```nginx
+location /api/ {
+    try_files $uri $uri/ /api/index.php?$query_string;
+}
+```
 
 
 

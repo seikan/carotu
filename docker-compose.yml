@@ -1,0 +1,33 @@
+services:
+  carotu:
+    image: php:8.4-apache
+    container_name: carotu
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - .:/var/www/html
+      - ./storage:/var/www/html/storage
+    environment:
+      # Optional: For nginx-proxy setups, uncomment and configure:
+      # - VIRTUAL_HOST=inventory.yourdomain.com
+      # - LETSENCRYPT_HOST=inventory.yourdomain.com
+      # - LETSENCRYPT_EMAIL=admin@yourdomain.com
+      - VIRTUAL_PORT=80
+    # For nginx-proxy networks, uncomment:
+    # networks:
+    #   - webproxy
+
+    # Enable Apache modules required for Carotu
+    command: >
+      bash -c "
+      a2enmod rewrite headers &&
+      docker-php-ext-install pdo pdo_sqlite &&
+      apache2-foreground
+      "
+
+# Uncomment if using nginx-proxy:
+# networks:
+#   webproxy:
+#     external: true
+#     name: webproxy
