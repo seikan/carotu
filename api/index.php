@@ -357,7 +357,7 @@ function handleStats($db) {
     // Get target currency from request (default: USD)
     $requestedCurrency = $_GET['currency'] ?? 'USD';
 
-    // Get exchange rate for target currency (rate stored as 4-digit integer)
+    // Get exchange rate for target currency
     $stmt = $db->prepare("SELECT rate FROM currency_rate WHERE currency_code = ?");
     $stmt->execute([$requestedCurrency]);
     $currencyRate = $stmt->fetch();
@@ -389,7 +389,9 @@ function handleStats($db) {
     ");
     $stmt->execute([$targetRate]);
 
-    $stats['monthly_cost'] = round($stmt->fetch()['total'] ?? 0);
+    $totalRaw = $stmt->fetch()['total'] ?? 0;
+    // Convert from multi-digit format to decimal with 2 places
+    $stats['monthly_cost'] = number_format($totalRaw / 100, 2, '.', '');
 
     // Machines by provider
     $stmt = $db->query("
