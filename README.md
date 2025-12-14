@@ -232,7 +232,7 @@ curl -H "X-API-Key: your-api-key" https://yourdomain.com/api/machines
 | `/providers/{id}` | GET | Get single provider |
 | `/payment-cycles` | GET | List payment cycles |
 | `/countries` | GET | List countries |
-| `/stats` | GET | Get statistics |
+| `/stats?currency=USD` | GET | Get statistics |
 
 **Example: Create Machine**
 
