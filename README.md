@@ -232,7 +232,7 @@ curl -H "X-API-Key: your-api-key" https://yourdomain.com/api/machines
 | `/providers/{id}` | GET | Get single provider |
 | `/payment-cycles` | GET | List payment cycles |
 | `/countries` | GET | List countries |
-| `/stats?currency=USD` | GET | Get statistics |
+| `/stats` | GET | Get statistics |
 
 **Example: Create Machine**
 
@@ -260,7 +260,7 @@ curl -X POST \
 **Example: Get Statistics**
 
 ```bash
-curl -H "X-API-Key: your-api-key" https://yourdomain.com/api/stats
+curl -H "X-API-Key: your-api-key" https://yourdomain.com/api/stats?currency=USD
 ```
 
 Response:
@@ -269,6 +269,7 @@ Response:
   "success": true,
   "data": {
     "stats": {
+      "currency": "USD",
       "total_machines": 47,
       "monthly_cost": 16903,
       "by_provider": [...],
