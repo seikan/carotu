@@ -369,6 +369,7 @@ function handleStats($db) {
     } else {
         $targetRate = 10000;
         $targetCurrency = 'USD';
+    }
 
     $stats = [];
     $stats['currency'] = $targetCurrency;
@@ -376,26 +377,19 @@ function handleStats($db) {
     // Total machines
     $stmt = $db->query("SELECT COUNT(*) as count FROM machine WHERE is_hidden = 0");
     $stats['total_machines'] = $stmt->fetch()['count'];
-
+    
     // Total cost per month with currency conversion
-    // Get all prices with their currency codes and payment cycles
-    $stmt = $db->query("
-        SELECT m.price, cr.rate, pc.month
+    $stmt = $db->prepare("
+        SELECT 
+            SUM((CAST(m.price AS REAL) / pc.month / cr.rate) * ?) as total
         FROM machine m
         JOIN payment_cycle pc ON m.payment_cycle_id = pc.payment_cycle_id
         JOIN currency_rate cr ON m.currency_code = cr.currency_code
         WHERE m.is_hidden = 0
     ");
+    $stmt->execute([$targetRate]);
 
-    $totalConverted = 0;
-    while ($row = $stmt->fetch()) {
-        // Calculate price per month first
-        $pricePerMonth = $row['price'] / $row['month'];
-        // Then convert currency: (price_per_month / source_rate) * target_rate
-        $totalConverted += ($pricePerMonth / $row['rate']) * $targetRate;
-    }
-
-    $stats['monthly_cost'] = round($totalConverted);
+    $stats['monthly_cost'] = round($stmt->fetch()['total'] ?? 0);
 
     // Machines by provider
     $stmt = $db->query("
