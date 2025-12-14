@@ -271,7 +271,7 @@ Response:
     "stats": {
       "currency": "USD",
       "total_machines": 47,
-      "monthly_cost": 16903,
+      "monthly_cost": 169.03,
       "by_provider": [...],
       "by_country": [...]
     }
