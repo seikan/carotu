@@ -355,13 +355,20 @@ function handleCountries($method, $db) {
  */
 function handleStats($db) {
     // Get target currency from request (default: USD)
-    $targetCurrency = $_GET['currency'] ?? 'USD';
+    $requestedCurrency = $_GET['currency'] ?? 'USD';
 
     // Get exchange rate for target currency (rate stored as 4-digit integer)
     $stmt = $db->prepare("SELECT rate FROM currency_rate WHERE currency_code = ?");
-    $stmt->execute([$targetCurrency]);
+    $stmt->execute([$requestedCurrency]);
     $currencyRate = $stmt->fetch();
-    $targetRate = $currencyRate ? $currencyRate['rate'] : 10000; // Default to USD if not found
+
+    // If currency not found, fall back to USD
+    if ($currencyRate) {
+        $targetRate = $currencyRate['rate'];
+        $targetCurrency = $requestedCurrency;
+    } else {
+        $targetRate = 10000;
+        $targetCurrency = 'USD';
 
     $stats = [];
     $stats['currency'] = $targetCurrency;
