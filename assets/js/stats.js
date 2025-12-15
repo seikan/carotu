@@ -96,6 +96,7 @@ class Stats {
 							providerHtml += '<tr>' +
 								'<td>' + (provider.name || 'Unknown') + '</td>' +
 								'<td class="text-end">' + provider.count + '</td>' +
+								'<td class="text-end text-muted">' + provider.cost + ' <small>' + data.currency + '</small></td>' +
 								'<td>' +
 								'<div class="progress" style="height: 20px;">' +
 								'<div class="progress-bar bg-primary" role="progressbar" style="width: ' + percentage + '%" aria-valuenow="' + provider.count + '" aria-valuemin="0" aria-valuemax="' + totalProviders + '">' +
@@ -107,7 +108,7 @@ class Stats {
 						});
 						$('#provider-tbody').html(providerHtml);
 					} else {
-						$('#provider-tbody').html('<tr><td colspan="3" class="text-center text-muted">No data</td></tr>');
+						$('#provider-tbody').html('<tr><td colspan="4" class="text-center text-muted">No data</td></tr>');
 					}
 
 					// Update country stats

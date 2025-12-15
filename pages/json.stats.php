@@ -70,6 +70,34 @@ $stmt = $db->query("
 	");
 $stats["by_provider"] = $stmt->fetchAll();
 
+// Cost by provider
+$stmt = $db->prepare("
+		SELECT 
+			p.name,
+			SUM((CAST(m.price AS REAL) / pc.month / cr.rate) * ?) as cost
+		FROM machine m
+		JOIN payment_cycle pc ON m.payment_cycle_id = pc.payment_cycle_id
+		JOIN currency_rate cr ON m.currency_code = cr.currency_code
+		JOIN provider p ON m.provider_id = p.provider_id
+		WHERE m.is_hidden = 0
+		GROUP BY p.provider_id
+		ORDER BY cost DESC
+	");
+$stmt->execute([$targetRate]);
+$costByProvider = $stmt->fetchAll();
+
+// Merge cost data into by_provider
+foreach ($stats["by_provider"] as &$provider) {
+    $provider["cost"] = "0.00";
+    foreach ($costByProvider as $cost) {
+        if ($cost["name"] === $provider["name"]) {
+            $provider["cost"] = number_format($cost["cost"] / 100, 2, ".", "");
+            break;
+        }
+    }
+}
+unset($provider);
+
 // Machines by country
 $stmt = $db->query("
 		SELECT c.country_name, c.country_code, COUNT(m.machine_id) as count

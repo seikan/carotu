@@ -577,12 +577,13 @@ if (!empty($currencies)) {
 													<tr>
 														<th>Provider</th>
 														<th class="text-end">Count</th>
-														<th style="width: 50%;">Distribution</th>
+														<th class="text-end">Monthly Cost</th>
+														<th style="width: 40%;">Distribution</th>
 													</tr>
 												</thead>
 												<tbody id="provider-tbody">
 													<tr>
-														<td colspan="3" class="text-center text-muted">No data</td>
+														<td colspan="4" class="text-center text-muted">No data</td>
 													</tr>
 												</tbody>
 											</table>
