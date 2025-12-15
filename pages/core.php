@@ -67,6 +67,7 @@ if (!empty($currencies)) {
 					<button class="btn btn-outline-secondary" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi bi-person-circle"></i></button>
 					<ul class="dropdown-menu dropdown-menu-end">
 						<li><a class="dropdown-item" href="#" id="menu-provider"><i class="bi bi-person-workspace"></i> Providers</a></li>
+						<li><a class="dropdown-item" href="#" id="menu-stats"><i class="bi bi-bar-chart-fill"></i> Statistics</a></li>
 						<li><a class="dropdown-item" href="#" id="menu-settings"><i class="bi bi-gear"></i> Settings</a></li>
 						<li>
 							<hr class="dropdown-divider">
