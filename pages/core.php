@@ -45,12 +45,12 @@ if (!empty($currencies)) {
 
 	<title>Carotu</title>
 
-	<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.2/flatly/bootstrap.min.css" rel="stylesheet">
-	<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.1/font/bootstrap-icons.min.css" rel="stylesheet">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.8/flatly/bootstrap.min.css" rel="stylesheet">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.13.1/font/bootstrap-icons.min.css" rel="stylesheet">
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/loaders.css/0.1.2/loaders.min.css" rel="stylesheet">
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.10.0/css/bootstrap-datepicker.min.css" rel="stylesheet">
-	<link href="https://cdnjs.cloudflare.com/ajax/libs/flag-icons/7.0.3/css/flag-icons.min.css" rel="stylesheet">
-	<link href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/flag-icons/7.5.0/css/flag-icons.min.css" rel="stylesheet">
+	<link href="https://cdn.datatables.net/1.13.11/css/dataTables.bootstrap5.min.css" rel="stylesheet">
 
 	<link href="./assets/css/select-search.min.css" rel="stylesheet">
 	<link href="./assets/css/style.min.css" rel="stylesheet">
@@ -653,13 +653,13 @@ if (!empty($currencies)) {
 	<?php $form->input(); ?>
 
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.8/js/bootstrap.bundle.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.10.0/js/bootstrap-datepicker.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.11/clipboard.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
 
-	<script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
-	<script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js"></script>
+	<script src="https://cdn.datatables.net/1.13.11/js/jquery.dataTables.min.js"></script>
+	<script src="https://cdn.datatables.net/1.13.11/js/dataTables.bootstrap5.min.js"></script>
 
 	<script src="./assets/js/variables.js"></script>
 	<script src="./assets/js/ip-address.min.js"></script>
