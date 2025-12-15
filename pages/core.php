@@ -11,7 +11,8 @@ defined('INDEX') or exit('Access is denied.');
 
 // Redirect to sign in page
 if (!$session->get('user')) {
-	exit(header('Location: ./sign-in'));
+        header('Location: ./sign-in');
+        exit;
 }
 
 $countryOptions = [];
@@ -77,7 +78,7 @@ if (!empty($currencies)) {
 		</div>
 	</header>
 
-	<main>
+    <main>
 		<div class="container py-3">
 			<div class="row mb-2">
 				<div class="col-12">
@@ -503,6 +504,125 @@ if (!empty($currencies)) {
 		</div>
 	</div>
 
+	<div class="modal" id="modal-stats" data-bs-backdrop="static" tabindex="-1" aria-labelledby="modal-stats" aria-hidden="true">
+		<div class="modal-dialog modal-xl">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h1 class="modal-title fs-5">Statistics</h1>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<div class="row mb-3">
+						<div class="col-12">
+							<div class="d-flex justify-content-end align-items-center">
+								<label class="me-2 mb-0">Currency:</label>
+								<select id="stats-currency" class="form-select form-select-sm" style="width: auto;">
+									<?php echo implode("", $currencyOptions); ?>
+								</select>
+							</div>
+						</div>
+					</div>
+
+					<div class="loader text-center p-5">
+						<div class="spinner-grow text-primary spinner-grow-sm" role="status"></div>
+						<div class="spinner-grow text-primary spinner-grow-sm" role="status"></div>
+						<div class="spinner-grow text-primary spinner-grow-sm" role="status"></div>
+					</div>
+
+					<div id="stats-content" class="d-none">
+						<!-- Cost Overview Cards -->
+						<div class="row mb-4">
+							<div class="col-12 col-md-4 mb-3">
+								<div class="card">
+									<div class="card-body">
+										<h6 class="card-subtitle mb-2 text-body-secondary"><i class="bi bi-hdd-rack"></i> Total Machines</h6>
+										<h2 class="card-title mb-0"><span id="total-machines">-</span></h2>
+									</div>
+								</div>
+							</div>
+							<div class="col-12 col-md-4 mb-3">
+								<div class="card">
+									<div class="card-body">
+										<h6 class="card-subtitle mb-2 text-body-secondary"><i class="bi bi-calendar-month"></i> Monthly Cost</h6>
+										<h2 class="card-title mb-0">
+											<span id="monthly-cost" class="text-primary">-</span>
+											<small class="text-muted" id="monthly-currency"></small>
+										</h2>
+									</div>
+								</div>
+							</div>
+							<div class="col-12 col-md-4 mb-3">
+								<div class="card">
+									<div class="card-body">
+										<h6 class="card-subtitle mb-2 text-body-secondary"><i class="bi bi-calendar-range"></i> Yearly Cost</h6>
+										<h2 class="card-title mb-0">
+											<span id="yearly-cost" class="text-danger">-</span>
+											<small class="text-muted" id="yearly-currency"></small>
+										</h2>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<!-- Machines by Provider -->
+						<div class="row mb-4">
+							<div class="col-12">
+								<div class="card">
+									<div class="card-body">
+										<h5 class="card-title"><i class="bi bi-person-workspace"></i> Machines by Provider</h5>
+										<div class="table-responsive">
+											<table class="table table-sm">
+												<thead>
+													<tr>
+														<th>Provider</th>
+														<th class="text-end">Count</th>
+														<th style="width: 50%;">Distribution</th>
+													</tr>
+												</thead>
+												<tbody id="provider-tbody">
+													<tr>
+														<td colspan="3" class="text-center text-muted">No data</td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<!-- Machines by Country -->
+						<div class="row mb-4">
+							<div class="col-12">
+								<div class="card">
+									<div class="card-body">
+										<h5 class="card-title"><i class="bi bi-globe"></i> Machines by Country</h5>
+										<div class="table-responsive">
+											<table class="table table-sm">
+												<thead>
+													<tr>
+														<th>Country</th>
+														<th class="text-end">Count</th>
+														<th style="width: 50%;">Distribution</th>
+													</tr>
+												</thead>
+												<tbody id="country-tbody">
+													<tr>
+														<td colspan="3" class="text-center text-muted">No data</td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
 	<div class="modal" id="modal-confirmation" tabindex="-1" aria-labelledby="modal-confirmation" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
@@ -549,12 +669,14 @@ if (!empty($currencies)) {
 	<script src="./assets/js/machine.min.js"></script>
 	<script src="./assets/js/provider.min.js"></script>
 	<script src="./assets/js/settings.min.js"></script>
+	<script src="./assets/js/stats.min.js"></script>
 
 	<script>
 		$(function() {
 			new Provider();
 			new Machine();
 			new Settings();
+			new Stats();
 		});
 	</script>
 </body>
