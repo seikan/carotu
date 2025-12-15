@@ -2,6 +2,9 @@ class Stats {
 	constructor() {
 		let _this = this;
 
+		// Set default currency based on browser locale
+		this.setDefaultCurrency();
+
 		// Open stats modal
 		$('#menu-stats').on('click', function (e) {
 			e.preventDefault();
@@ -17,6 +20,41 @@ class Stats {
 		$('#modal-stats').on('show.bs.modal', function () {
 			_this.loadStats();
 		});
+	}
+
+	setDefaultCurrency() {
+		// Get browser locale
+		var locale = navigator.language || navigator.userLanguage || 'en-US';
+		var currencyMap = {
+			'de': 'EUR',
+			'fr': 'EUR',
+			'es': 'EUR',
+			'it': 'EUR',
+			'nl': 'EUR',
+			'en-GB': 'GBP',
+			'en-US': 'USD',
+			'ja': 'JPY',
+			'zh': 'CNY',
+			'ru': 'RUB',
+			'pl': 'PLN',
+			'tr': 'TRY',
+			'br': 'BRL',
+			'pt': 'EUR',
+			'ch': 'CHF',
+			'se': 'SEK',
+			'no': 'NOK',
+			'dk': 'DKK'
+		};
+
+		// Try to match full locale first (e.g., en-GB), then language code (e.g., en)
+		var currency = currencyMap[locale] || currencyMap[locale.split('-')[0]] || 'USD';
+
+		// Check if currency exists in dropdown
+		if ($('#stats-currency option[value="' + currency + '"]').length > 0) {
+			$('#stats-currency').val(currency);
+		} else {
+			$('#stats-currency').val('USD');
+		}
 	}
 
 	loadStats() {
@@ -46,16 +84,21 @@ class Stats {
 					// Update provider stats
 					if (data.by_provider && data.by_provider.length > 0) {
 						var providerHtml = '';
-						var maxProviderCount = Math.max.apply(Math, data.by_provider.map(function (p) { return p.count; }));
+						var totalProviders = 0;
+
+						// Calculate total
+						$.each(data.by_provider, function (i, provider) {
+							totalProviders += parseInt(provider.count);
+						});
 
 						$.each(data.by_provider, function (i, provider) {
-							var percentage = (provider.count / maxProviderCount * 100).toFixed(1);
+							var percentage = (provider.count / totalProviders * 100).toFixed(1);
 							providerHtml += '<tr>' +
 								'<td>' + (provider.name || 'Unknown') + '</td>' +
 								'<td class="text-end">' + provider.count + '</td>' +
 								'<td>' +
 								'<div class="progress" style="height: 20px;">' +
-								'<div class="progress-bar bg-primary" role="progressbar" style="width: ' + percentage + '%" aria-valuenow="' + provider.count + '" aria-valuemin="0" aria-valuemax="' + maxProviderCount + '">' +
+								'<div class="progress-bar bg-primary" role="progressbar" style="width: ' + percentage + '%" aria-valuenow="' + provider.count + '" aria-valuemin="0" aria-valuemax="' + totalProviders + '">' +
 								percentage + '%' +
 								'</div>' +
 								'</div>' +
@@ -70,10 +113,15 @@ class Stats {
 					// Update country stats
 					if (data.by_country && data.by_country.length > 0) {
 						var countryHtml = '';
-						var maxCountryCount = Math.max.apply(Math, data.by_country.map(function (c) { return c.count; }));
+						var totalCountries = 0;
+
+						// Calculate total
+						$.each(data.by_country, function (i, country) {
+							totalCountries += parseInt(country.count);
+						});
 
 						$.each(data.by_country, function (i, country) {
-							var percentage = (country.count / maxCountryCount * 100).toFixed(1);
+							var percentage = (country.count / totalCountries * 100).toFixed(1);
 							var flagClass = country.country_code ? 'fi fi-' + country.country_code.toLowerCase() : '';
 							countryHtml += '<tr>' +
 								'<td>' +
@@ -83,7 +131,7 @@ class Stats {
 								'<td class="text-end">' + country.count + '</td>' +
 								'<td>' +
 								'<div class="progress" style="height: 20px;">' +
-								'<div class="progress-bar bg-success" role="progressbar" style="width: ' + percentage + '%" aria-valuenow="' + country.count + '" aria-valuemin="0" aria-valuemax="' + maxCountryCount + '">' +
+								'<div class="progress-bar bg-success" role="progressbar" style="width: ' + percentage + '%" aria-valuenow="' + country.count + '" aria-valuemin="0" aria-valuemax="' + totalCountries + '">' +
 								percentage + '%' +
 								'</div>' +
 								'</div>' +
