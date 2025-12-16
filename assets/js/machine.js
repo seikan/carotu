@@ -351,6 +351,10 @@ class Machine {
 								case 'XEN':
 									badgeClass = 'text-bg-danger';
 									break;
+
+								case 'Web':
+									badgeClass = 'text-bg-secondary';
+									break;
 							}
 
 							return parts[0] + '<p><span class="badge badge-sm ' + badgeClass + '">' + parts[1] + '</span>' + (parts[2] == 1 ? '<span class="badge badge-sm border border-1 border-warning text-warning ms-2">NAT</span>' : '') + (parts[3] == 1 ? '<span class="badge text-primary" data-bs-toggle="tooltip" data-bs-title="Hidden"><i class="bi bi-eye-slash"></i></span>' : '') + '</p>';

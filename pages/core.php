@@ -44,6 +44,8 @@ if (!empty($currencies)) {
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 
 	<title>Carotu</title>
+	
+	<link rel="icon" type="image/x-icon" href="favicon.ico">
 
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.8/flatly/bootstrap.min.css" rel="stylesheet">
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.13.1/font/bootstrap-icons.min.css" rel="stylesheet">
@@ -576,8 +578,8 @@ if (!empty($currencies)) {
 												<thead>
 													<tr>
 														<th>Provider</th>
-														<th class="text-end">Count</th>
-														<th class="text-end">Monthly Cost</th>
+														<th class="text-center">Count</th>
+														<th class="text-center">Monthly Cost</th>
 														<th style="width: 40%;">Distribution</th>
 													</tr>
 												</thead>
@@ -614,6 +616,42 @@ if (!empty($currencies)) {
 													</tr>
 												</tbody>
 											</table>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- Resource Summary -->
+						<div class="row mb-4">
+							<div class="col-12">
+								<div class="card">
+									<div class="card-body">
+										<h5 class="card-title"><i class="bi bi-cpu"></i> Total Resources</h5>
+										<div class="row">
+											<div class="col-6 col-md-3 mb-3">
+												<div class="text-center">
+													<h6 class="text-muted mb-1">CPU Cores</h6>
+													<h3 id="total-cores" class="mb-0">-</h3>
+												</div>
+											</div>
+											<div class="col-6 col-md-3 mb-3">
+												<div class="text-center">
+													<h6 class="text-muted mb-1">RAM</h6>
+													<h3 id="total-memory" class="mb-0">-</h3>
+												</div>
+											</div>
+											<div class="col-6 col-md-3 mb-3">
+												<div class="text-center">
+													<h6 class="text-muted mb-1">Disk Space</h6>
+													<h3 id="total-disk" class="mb-0">-</h3>
+												</div>
+											</div>
+											<div class="col-6 col-md-3 mb-3">
+												<div class="text-center">
+													<h6 class="text-muted mb-1">Bandwidth</h6>
+													<h3 id="total-bandwidth" class="mb-0">-</h3>
+												</div>
+											</div>
 										</div>
 									</div>
 								</div>

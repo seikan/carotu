@@ -20,6 +20,11 @@ class Stats {
 		$('#modal-stats').on('show.bs.modal', function () {
 			_this.loadStats();
 		});
+
+		// Reset focus when modal is hidden
+		$('#modal-stats').on('hide.bs.modal', function () {
+			$(this).find(':focus').blur();
+		});
 	}
 
 	setDefaultCurrency() {
@@ -80,28 +85,40 @@ class Stats {
 					$('#total-machines').text(data.total_machines);
 					$('#monthly-cost').text(data.monthly_cost);
 					$('#yearly-cost').text(data.yearly_cost);
+					// Update resource cards
+					$('#total-cores').text(data.total_cores);
+					$('#total-memory').text((data.total_memory / 1024).toFixed(0) + ' GB');
+					$('#total-disk').text((data.total_disk / 1024 / 1024).toFixed(0) + ' TB');
+					$('#total-bandwidth').text((data.total_bandwidth / 1024 / 1024).toFixed(0) + ' TB');
 
 					// Update provider stats
 					if (data.by_provider && data.by_provider.length > 0) {
 						var providerHtml = '';
 						var totalProviders = 0;
+						var totalCost = 0;
 
-						// Calculate total
+						// Calculate totals
 						$.each(data.by_provider, function (i, provider) {
 							totalProviders += parseInt(provider.count);
+							totalCost += parseFloat(provider.cost);
 						});
 
 						$.each(data.by_provider, function (i, provider) {
-							var percentage = (provider.count / totalProviders * 100).toFixed(1);
+							var countPercentage = (provider.count / totalProviders * 100).toFixed(1);
+							var costPercentage = (parseFloat(provider.cost) / totalCost * 100).toFixed(1);
+
 							providerHtml += '<tr>' +
 								'<td>' + (provider.name || 'Unknown') + '</td>' +
-								'<td class="text-end">' + provider.count + '</td>' +
-								'<td class="text-end text-muted">' + provider.cost + ' <small>' + data.currency + '</small></td>' +
+								'<td class="text-center">' + provider.count + '</td>' +
+								'<td class="text-center text-muted">' + provider.cost + ' <small>' + data.currency + '</small></td>' +
 								'<td>' +
-								'<div class="progress" style="height: 20px;">' +
-								'<div class="progress-bar bg-primary" role="progressbar" style="width: ' + percentage + '%" aria-valuenow="' + provider.count + '" aria-valuemin="0" aria-valuemax="' + totalProviders + '">' +
-								percentage + '%' +
+								'<div class="mb-1"><small class="text-muted">Machines: ' + countPercentage + '%</small></div>' +
+								'<div class="progress mb-1" style="height: 12px;">' +
+								'<div class="progress-bar bg-primary" role="progressbar" style="width: ' + countPercentage + '%"></div>' +
 								'</div>' +
+								'<div class="mb-1"><small class="text-muted">Cost: ' + costPercentage + '%</small></div>' +
+								'<div class="progress mb-1" style="height: 12px;">' +
+								'<div class="progress-bar bg-info" role="progressbar" style="width: ' + costPercentage + '%"></div>' +
 								'</div>' +
 								'</td>' +
 								'</tr>';

@@ -43,6 +43,22 @@ $stats["currency"] = $targetCurrency;
 $stmt = $db->query("SELECT COUNT(*) as count FROM machine WHERE is_hidden = 0");
 $stats["total_machines"] = $stmt->fetch()["count"];
 
+// Total resources
+$stmt = $db->query("
+	SELECT 
+		SUM(m.cpu_core) as total_cores,
+		SUM(m.memory) as total_memory,
+		SUM(m.disk_space) as total_disk,
+		SUM(m.bandwidth) as total_bandwidth
+	FROM machine m
+	WHERE m.is_hidden = 0
+");
+$resources = $stmt->fetch();
+$stats['total_cores'] = $resources['total_cores'] ?? 0;
+$stats['total_memory'] = $resources['total_memory'] ?? 0;
+$stats['total_disk'] = $resources['total_disk'] ?? 0;
+$stats['total_bandwidth'] = $resources['total_bandwidth'] ?? 0;
+
 // Total cost per month with currency conversion (calculated in DB)
 $stmt = $db->prepare("
 		SELECT 
