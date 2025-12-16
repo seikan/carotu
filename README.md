@@ -260,7 +260,7 @@ curl -X POST \
 **Example: Get Statistics**
 
 ```bash
-curl -H "X-API-Key: your-api-key" https://yourdomain.com/api/stats
+curl -H "X-API-Key: your-api-key" https://yourdomain.com/api/stats?currency=USD
 ```
 
 Response:
@@ -269,8 +269,9 @@ Response:
   "success": true,
   "data": {
     "stats": {
+      "currency": "USD",
       "total_machines": 47,
-      "monthly_cost": 16903,
+      "monthly_cost": 169.03,
       "by_provider": [...],
       "by_country": [...]
     }

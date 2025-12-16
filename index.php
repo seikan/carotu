@@ -94,8 +94,17 @@ if (!$session->get('user') && strpos((string) $cookie->get('auth'), ';') !== fal
 	}
 }
 
+// Get requested page - FIX for subfolders
+$scriptDir = dirname($_SERVER['SCRIPT_NAME']);
+$requestUri = $_SERVER['REQUEST_URI'];
+
+// Remove subfolder from URI
+if (!empty($scriptDir) && $scriptDir !== '/' && strpos($requestUri, $scriptDir) === 0) {
+    $requestUri = substr($requestUri, strlen($scriptDir));
+}
+
 // Get requested page
-$_PAGE = basename(preg_replace('/\?.*/', '', $_SERVER['REQUEST_URI']));
+$_PAGE = basename(preg_replace('/\?.*/', '', $requestUri));
 $_PAGE = (substr($_PAGE, -5) == '.json') ? ('json.' . substr($_PAGE, 0, -5)) : ((!empty($_PAGE)) ? $_PAGE : 'core');
 
 // Validate pages to prevent file inclusion vulnerability
