@@ -63,16 +63,18 @@ All records refreshed hourly.
 
 ```
 Options -Indexes
-RewriteEngine on
+<IfModule mod_rewrite.c>
+  RewriteEngine on
 
-<FilesMatch "\.(log|htaccess|sqlite)$">
-  Require all denied
-</FilesMatch>
+  <FilesMatch "\.(log|htaccess|sqlite)$">
+    Require all denied
+  </FilesMatch>
 
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteCond %{REQUEST_URI} !=/favicon.ico
-RewriteRule ^(.*)$ index.php [L,QSA]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_URI} !=/favicon.ico
+  RewriteRule ^(.*)$ index.php [L,QSA]
+</IfModule>
 ```
 
 
