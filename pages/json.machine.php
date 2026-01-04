@@ -529,7 +529,7 @@ if ($request->isPost()) {
 						break;
 
 					case 'Virtualization':
-						if (in_array($matches[3], ['Dedicated', 'OpenStack', 'OpenVZ', 'HyperV', 'KVM', 'LXD', 'VMWare', 'XEN'])) {
+						if (in_array($matches[3], ['Dedicated', 'OpenStack', 'OpenVZ', 'HyperV', 'KVM', 'LXD', 'VMWare', 'XEN', 'Web'])) {
 							$conditions[] = 'm.`virtualization` ' . $matches[2] . ' :virtualization';
 							$binds[':virtualization'] = $matches[3];
 						}

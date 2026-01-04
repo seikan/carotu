@@ -63,16 +63,18 @@ All records refreshed hourly.
 
 ```
 Options -Indexes
-RewriteEngine on
+<IfModule mod_rewrite.c>
+  RewriteEngine on
 
-<FilesMatch "\.(log|htaccess|sqlite)$">
-  Require all denied
-</FilesMatch>
+  <FilesMatch "\.(log|htaccess|sqlite)$">
+    Require all denied
+  </FilesMatch>
 
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteCond %{REQUEST_URI} !=/favicon.ico
-RewriteRule ^(.*)$ index.php [L,QSA]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_URI} !=/favicon.ico
+  RewriteRule ^(.*)$ index.php [L,QSA]
+</IfModule>
 ```
 
 
@@ -260,7 +262,7 @@ curl -X POST \
 **Example: Get Statistics**
 
 ```bash
-curl -H "X-API-Key: your-api-key" https://yourdomain.com/api/stats
+curl -H "X-API-Key: your-api-key" https://yourdomain.com/api/stats?currency=USD
 ```
 
 Response:
@@ -269,8 +271,9 @@ Response:
   "success": true,
   "data": {
     "stats": {
+      "currency": "USD",
       "total_machines": 47,
-      "monthly_cost": 16903,
+      "monthly_cost": 169.03,
       "by_provider": [...],
       "by_country": [...]
     }

@@ -354,20 +354,44 @@ function handleCountries($method, $db) {
  * Handle /stats endpoint
  */
 function handleStats($db) {
+    // Get target currency from request (default: USD)
+    $requestedCurrency = $_GET['currency'] ?? 'USD';
+
+    // Get exchange rate for target currency
+    $stmt = $db->prepare("SELECT rate FROM currency_rate WHERE currency_code = ?");
+    $stmt->execute([$requestedCurrency]);
+    $currencyRate = $stmt->fetch();
+
+    // If currency not found, fall back to USD
+    if ($currencyRate) {
+        $targetRate = $currencyRate['rate'];
+        $targetCurrency = $requestedCurrency;
+    } else {
+        $targetRate = 10000;
+        $targetCurrency = 'USD';
+    }
+
     $stats = [];
+    $stats['currency'] = $targetCurrency;
 
     // Total machines
     $stmt = $db->query("SELECT COUNT(*) as count FROM machine WHERE is_hidden = 0");
     $stats['total_machines'] = $stmt->fetch()['count'];
-
-    // Total cost per month
-    $stmt = $db->query("
-        SELECT SUM(m.price) as total
+    
+    // Total cost per month with currency conversion
+    $stmt = $db->prepare("
+        SELECT 
+            SUM((CAST(m.price AS REAL) / pc.month / cr.rate) * ?) as total
         FROM machine m
         JOIN payment_cycle pc ON m.payment_cycle_id = pc.payment_cycle_id
-        WHERE m.is_hidden = 0 AND pc.month = 1
+        JOIN currency_rate cr ON m.currency_code = cr.currency_code
+        WHERE m.is_hidden = 0
     ");
-    $stats['monthly_cost'] = $stmt->fetch()['total'] ?? 0;
+    $stmt->execute([$targetRate]);
+
+    $totalRaw = $stmt->fetch()['total'] ?? 0;
+    // Convert from multi-digit format to decimal with 2 places
+    $stats['monthly_cost'] = number_format($totalRaw / 100, 2, '.', '');
 
     // Machines by provider
     $stmt = $db->query("
